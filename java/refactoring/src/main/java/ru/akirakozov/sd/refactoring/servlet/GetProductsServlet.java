@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Properties;
 
 /**
  * @author akirakozov
@@ -17,9 +18,13 @@ public class GetProductsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            try (Connection c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/products")) {
+            Properties properties = new Properties();
+            properties.setProperty("user","postgres");
+            properties.setProperty("password","postgres");
+            try (Connection c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/products",
+                    properties)) {
                 Statement stmt = c.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT * FROM PRODUCT");
+                ResultSet rs = stmt.executeQuery("SELECT * FROM Product");
                 response.getWriter().println("<html><body>");
 
                 while (rs.next()) {

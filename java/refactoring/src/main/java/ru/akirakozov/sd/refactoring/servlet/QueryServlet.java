@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Properties;
 
 /**
  * @author akirakozov
@@ -16,12 +17,16 @@ public class QueryServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String command = request.getParameter("command");
+        Properties properties = new Properties();
+        properties.setProperty("user","postgres");
+        properties.setProperty("password","postgres");
 
         if ("max".equals(command)) {
             try {
-                try (Connection c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/products")) {
+                try (Connection c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/products",
+                        properties)) {
                     Statement stmt = c.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1");
+                    ResultSet rs = stmt.executeQuery("SELECT * FROM Product ORDER BY price DESC LIMIT 1");
                     response.getWriter().println("<html><body>");
                     response.getWriter().println("<h1>Product with max price: </h1>");
 
@@ -41,9 +46,10 @@ public class QueryServlet extends HttpServlet {
             }
         } else if ("min".equals(command)) {
             try {
-                try (Connection c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/products")) {
+                try (Connection c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/products",
+                        properties)) {
                     Statement stmt = c.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE LIMIT 1");
+                    ResultSet rs = stmt.executeQuery("SELECT * FROM Product ORDER BY price LIMIT 1");
                     response.getWriter().println("<html><body>");
                     response.getWriter().println("<h1>Product with min price: </h1>");
 
@@ -63,9 +69,10 @@ public class QueryServlet extends HttpServlet {
             }
         } else if ("sum".equals(command)) {
             try {
-                try (Connection c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/products")) {
+                try (Connection c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/products",
+                        properties)) {
                     Statement stmt = c.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT SUM(price) FROM PRODUCT");
+                    ResultSet rs = stmt.executeQuery("SELECT SUM(price) FROM Product");
                     response.getWriter().println("<html><body>");
                     response.getWriter().println("Summary price: ");
 
@@ -83,9 +90,10 @@ public class QueryServlet extends HttpServlet {
             }
         } else if ("count".equals(command)) {
             try {
-                try (Connection c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/products")) {
+                try (Connection c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/products",
+                        properties)) {
                     Statement stmt = c.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM PRODUCT");
+                    ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM Product");
                     response.getWriter().println("<html><body>");
                     response.getWriter().println("Number of products: ");
 

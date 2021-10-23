@@ -10,17 +10,21 @@ import ru.akirakozov.sd.refactoring.servlet.QueryServlet;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
+import java.util.Properties;
 
 /**
  * @author akirakozov
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        try (Connection c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/products")) {
-            String sql = "CREATE TABLE IF NOT EXISTS PRODUCT" +
-                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                    " NAME           TEXT    NOT NULL, " +
-                    " PRICE          INT     NOT NULL)";
+        Properties properties = new Properties();
+        properties.setProperty("user","postgres");
+        properties.setProperty("password","postgres");
+        try (Connection c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/products", properties)) {
+            String sql = "CREATE TABLE IF NOT EXISTS Product" +
+                    "(ID BIGSERIAL PRIMARY KEY," +
+                    " name           TEXT    NOT NULL, " +
+                    " price          INT     NOT NULL)";
             Statement stmt = c.createStatement();
 
             stmt.executeUpdate(sql);
