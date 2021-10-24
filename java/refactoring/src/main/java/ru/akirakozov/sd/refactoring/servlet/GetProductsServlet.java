@@ -1,6 +1,7 @@
 package ru.akirakozov.sd.refactoring.servlet;
 
 import ru.akirakozov.sd.refactoring.database.DatabaseUtils;
+import ru.akirakozov.sd.refactoring.html.HtmlUtils;
 import ru.akirakozov.sd.refactoring.utils.ThrowingConsumer;
 
 import javax.servlet.http.HttpServlet;
@@ -22,17 +23,7 @@ public class GetProductsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        DatabaseUtils.executeQuery("SELECT * FROM Product", resultSet -> {
-            response.getWriter().println("<html><body>");
-            while (resultSet.next()) {
-                String name = resultSet.getString("name");
-                int price  = resultSet.getInt("price");
-                response.getWriter().println(name + "\t" + price + "</br>");
-            }
-            response.getWriter().println("</body></html>");
-        });
-
-        response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);
+        DatabaseUtils.executeQuery("SELECT * FROM Product", resultSet ->
+                HtmlUtils.formProductListResponse(resultSet, response, null));
     }
 }
